@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Підписка ОСББ</title>
+  <link rel="shortcut icon" type="image/x-icon" href="img/osbb2.png">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-left"><a href="php/login.php">← На головну</a></div>
+    <div class="header-center"><h1>Підписка ОСББ</h1></div>
+    <div class="header-right">
+      <label class="ui-switch">
+        <input type="checkbox" id="themeToggle">
+        <div class="slider"><div class="circle"></div></div>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <h2>Оберіть план підписки</h2>
+      <p>Отримайте аккаунт, який дає можливість керувати вашим ОСББ.</p>
+      <table>
+        <tr><th>План</th><th>Термін</th><th>Ціна</th><th></th></tr>
+        <tr><td><b>Базовий</b></td><td>1 місяць</td><td>₴99</td><td><button onclick="choosePlan('Базовий', 99)">Придбати</button></td></tr>
+        <tr><td><b>Стандарт</b></td><td>6 місяців</td><td>₴499</td><td><button onclick="choosePlan('Стандарт', 499)">Придбати</button></td></tr>
+        <tr><td><b>Преміум</b></td><td>12 місяців</td><td>₴999</td><td><button onclick="choosePlan('Преміум', 999)">Придбати</button></td></tr>
+      </table>
+    </section>
+
+    <section id="paymentSection" style="display:none;">
+      <h2>Оплата підписки</h2>
+      <p id="planInfo"></p>
+      <form id="paymentForm" onsubmit="return false;">
+        <input type="text" id="cardName" placeholder="ПІБ власника" required><br>
+        <input type="email" id="email" placeholder="Email" required><br>
+        <input type="text" id="cardNumber" placeholder="Номер картки" maxlength="19" required><br>
+        <input type="text" id="cardMonth" placeholder="MM" maxlength="2" required style="width:20%">
+        <input type="text" id="cardYear" placeholder="YY" maxlength="2" required style="width:20%"><br>
+        <input type="text" id="cvv" placeholder="CVV" maxlength="3" required><br>
+        <button type="submit" onclick="confirmPayment()">Підтвердити оплату</button>
+      </form>
+    </section>
+  </main>
+
+  <div id="receiptModal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); overflow-y: auto;">
+    <div style="background: white; margin: 20px auto; padding: 0; width: 500px; border-radius: 8px; color: #333;">
+      <div id="pdfContent" style="padding: 40px;">
+        <div style="text-align: center; border-bottom: 2px solid #28a745; padding-bottom: 20px; margin-bottom: 20px;">
+          <h2 style="color: #28a745; margin: 0;">КВИТАНЦІЯ №<span id="rNumber"></span></h2>
+          <p>Платформа ОСББ — Електронний чек</p>
+        </div>
+        <div style="line-height: 1.6; font-size: 14px;">
+          <div style="display: flex; justify-content: space-between;"><span>Дата:</span> <b id="rDate"></b></div>
+          <div style="display: flex; justify-content: space-between;"><span>План:</span> <b id="rPlan"></b></div>
+          <div style="display: flex; justify-content: space-between;"><span>Сума:</span> <b id="rAmount"></b></div>
+          <hr>
+          <div style="display: flex; justify-content: space-between;"><span>Платник:</span> <b id="rName"></b></div>
+          <div style="display: flex; justify-content: space-between;"><span>Email:</span> <b id="rEmail"></b></div>
+          <div style="display: flex; justify-content: space-between;"><span>Картка:</span> <b id="rCard"></b></div>
+        </div>
+      </div>
+      <div style="padding: 20px; text-align: center; background: #f9f9f9;">
+        <button onclick="downloadPDF()" style="background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Завантажити PDF</button>
+        <button onclick="document.getElementById('receiptModal').style.display='none'" style="background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Закрити</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>© 2025 ОСББ Платформа</p>
+  </footer>
+
+  <script>
+    let selectedPlanName = "";
+    let selectedPlanPrice = 0;
+
+    // Темна тема
+    document.getElementById('themeToggle').addEventListener('change', (e) => {
+      document.body.classList.toggle('dark-theme', e.target.checked);
+    });
+
+    function choosePlan(name, price) {
+      selectedPlanName = name;
+      selectedPlanPrice = price;
+      document.getElementById('paymentSection').style.display = 'block';
+      document.getElementById('planInfo').innerText = `План: ${name} (₴${price})`;
+      window.scrollTo({ top: document.getElementById('paymentSection').offsetTop, behavior: 'smooth' });
+    }
+
+    async function confirmPayment() {
+      const name = document.getElementById('cardName').value;
+      const email = document.getElementById('email').value;
+      const card = document.getElementById('cardNumber').value;
+
+      if (!name || !email || card.length < 16) {
+        alert('Заповніть форму коректно!');
+        return;
+      }
+
+      const orderId = Math.floor(Math.random() * 900000) + 100000;
+
+      // Оновлюємо дані в модальному вікні
+      document.getElementById('rNumber').innerText = orderId;
+      document.getElementById('rDate').innerText = new Date().toLocaleString();
+      document.getElementById('rPlan').innerText = selectedPlanName;
+      document.getElementById('rAmount').innerText = `₴${selectedPlanPrice}`;
+      document.getElementById('rName').innerText = name;
+      document.getElementById('rEmail').innerText = email;
+      document.getElementById('rCard').innerText = card.replace(/\d(?=\d{4})/g, "*");
+
+      // Показуємо вікно
+      document.getElementById('receiptModal').style.display = 'block';
+
+      // Відправка на сервер
+      fetch('php/send_receipt.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, plan: selectedPlanName, price: selectedPlanPrice, orderId })
+      }).then(res => res.json()).then(data => console.log("Email status:", data));
+    }
+
+    function downloadPDF() {
+    // Збираємо дані, які вже відображені в модальному вікні
+    const orderId = document.getElementById('rNumber').innerText;
+    const name = document.getElementById('rName').innerText;
+    const email = document.getElementById('rEmail').innerText;
+    const plan = document.getElementById('rPlan').innerText;
+    const price = document.getElementById('rAmount').innerText.replace('₴', '');
+
+    // Формуємо посилання для завантаження
+    const url = `php/send_receipt.php?orderId=${orderId}&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&plan=${encodeURIComponent(plan)}&price=${price}`;
+    
+    // Відкриваємо посилання для завантаження файлу
+    window.location.href = url;
+}
+
+    // Форматування карти
+    document.getElementById('cardNumber').addEventListener('input', function(e) {
+      e.target.value = e.target.value.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim();
+    });
+  </script>
+</body>
+</html>

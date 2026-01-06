@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>403 — Доступ заборонено</title>
+  <style>
+    body {
+      background-color: #f4f4f9;
+      color: #333;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+    }
+    h1 {
+      font-size: 8rem;
+      margin: 0;
+      color: #ff5555;
+    }
+    h2 {
+      font-size: 2rem;
+      margin-top: 0.5rem;
+    }
+    p {
+      font-size: 1.1rem;
+      margin: 1rem 0 2rem;
+      color: #555;
+    }
+    a {
+      text-decoration: none;
+      background-color: #ff5555;
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+    a:hover {
+      background-color: #cc0000;
+    }
+    footer {
+      position: absolute;
+      bottom: 15px;
+      font-size: 0.9rem;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <h1>403</h1>
+  <h2>Доступ заборонено</h2>
+  <p>Ви не маєте дозволу переглядати цю сторінку.</p>
+  <a href="https://testosbb.xo.je/php/login.php">На головну</a>
+  <footer>&copy; <span id="year"></span> ОСББ</footer>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
