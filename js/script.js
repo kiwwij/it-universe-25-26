@@ -2,18 +2,7 @@ let residents = [];
 let messages = [];
 let sortDirections = {};
 
-// ---------------------------
-// ЗАВАНТАЖЕННЯ ДАНИХ З JSON
-// fetch("data/data.json")
-//   .then(res => res.json())
-//   .then(data => {
-//     residents = data;
-//     renderTable();
-//     updateFreeApartments();
-//   });
-
-// ЗАВАНТАЖЕННЯ ДАНИХ З PHP
-fetch("php/getResidents.php")
+fetch("/php/getResidents.php")
   .then(res => res.json())
   .then(data => {
     residents = data;
@@ -22,15 +11,12 @@ fetch("php/getResidents.php")
   })
   .catch(err => console.error("Помилка завантаження даних:", err));
 
-// Розрахунок видимого балансу
 function getVisibleBalance(r) {
   return r.currentBalance + r.paymentDue;
 }
 
-// Прихований борг за замовчуванням
 let showDebt = false;
 
-// Формула "До сплати"
 function calculatePayment(r) {
   if (r.currentBalance >= 0) {
     return Math.max(5000 - r.currentBalance, 0);
@@ -38,14 +24,14 @@ function calculatePayment(r) {
   return 5000;
 }
 
-// Борг
 function calculateDebt(r) {
   return r.currentBalance < 0 ? Math.abs(r.currentBalance) : 0;
 }
 
-// Відобразити таблицю
 function renderTable() {
   let tbody = document.querySelector("#residentsTable tbody");
+  if (!tbody) return;
+  
   tbody.innerHTML = "";
   residents.forEach(r => {
     let payment = calculatePayment(r);
@@ -70,71 +56,72 @@ function renderTable() {
   });
 }
 
-// Кнопка показу/приховування боргів
-document.getElementById("toggleDebt").addEventListener("click", () => {
-  showDebt = !showDebt;
-  document.querySelectorAll(".debt-col").forEach(col => {
-    col.style.display = showDebt ? "table-cell" : "none";
+const toggleDebtBtn = document.getElementById("toggleDebt");
+if (toggleDebtBtn) {
+  toggleDebtBtn.addEventListener("click", () => {
+    showDebt = !showDebt;
+    document.querySelectorAll(".debt-col").forEach(col => {
+      col.style.display = showDebt ? "table-cell" : "none";
+    });
+    toggleDebtBtn.textContent = showDebt ? "❌ Сховати борги" : "✅ Показати борги";
+    renderTable();
   });
-  document.getElementById("toggleDebt").textContent = showDebt ? "❌ Сховати борги" : "✅ Показати борги";
-  renderTable();
-});
+}
 
-// Додати мешканця
-document.getElementById("addResidentForm").addEventListener("submit", function(e) {
-  e.preventDefault();
+const addResidentForm = document.getElementById("addResidentForm");
+if (addResidentForm) {
+  addResidentForm.addEventListener("submit", function(e) {
+    e.preventDefault();
 
-  // Отримуємо список вільних квартир
-  let freeApts = residents.filter(r => r.name === null || r.name === '').map(r => parseInt(r.apartment));
-  if (freeApts.length === 0) return alert("Вільних квартир більше немає!");
+    let freeApts = residents.filter(r => r.name === null || r.name === '').map(r => parseInt(r.apartment));
+    if (freeApts.length === 0) return alert("Вільних квартир більше немає!");
 
-  // Квартира, яку вибрав користувач
-  let apartment = parseInt(document.getElementById("apartment").value);
-  if (!apartment || !freeApts.includes(apartment)) {
-    return alert("Оберіть дійсно вільну квартиру!");
-  }
-
-  let entrance = apartment <= 27 ? 1 : 2;
-  let newResident = {
-    id: apartment,
-    name: document.getElementById("name").value,
-    apartment: apartment,
-    entrance: entrance,
-    area: residents.find(r => parseInt(r.apartment) === apartment)?.area ?? 0,
-    currentBalance: parseFloat(document.getElementById("balance").value),
-    paymentDue: 0,
-    debt: 0
-  };
-
-  // Відправка на сервер
-  fetch('php/addResident.php', {
-    method: 'POST',
-    headers: { 
-        'Content-Type': 'application/json; charset=UTF-8' // Додайте charset=UTF-8
-    },
-    body: JSON.stringify(newResident)
-})
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      // Оновлюємо масив локально
-      let index = residents.findIndex(r => parseInt(r.apartment) === apartment);
-      residents[index] = newResident;
-
-      renderTable();
-      updateFreeApartments();
-      this.reset();
-      alert("Мешканця успішно додано!");
-    } else {
-      alert("Помилка додавання: " + data.error);
+    let apartment = parseInt(document.getElementById("apartment").value);
+    if (!apartment || !freeApts.includes(apartment)) {
+      return alert("Оберіть дійсно вільну квартиру!");
     }
-  })
-  .catch(err => alert("Помилка мережі: " + err));
-});
 
-// Вільні квартири
+    let entrance = apartment <= 27 ? 1 : 2;
+    let newResident = {
+      id: apartment,
+      name: document.getElementById("name").value,
+      apartment: apartment,
+      entrance: entrance,
+      area: residents.find(r => parseInt(r.apartment) === apartment)?.area ?? 0,
+      currentBalance: parseFloat(document.getElementById("balance").value),
+      paymentDue: 0,
+      debt: 0
+    };
+
+    fetch('/php/addResident.php', {
+      method: 'POST',
+      headers: { 
+          'Content-Type': 'application/json; charset=UTF-8'
+      },
+      body: JSON.stringify(newResident)
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        let index = residents.findIndex(r => parseInt(r.apartment) === apartment);
+        residents[index] = newResident;
+
+        renderTable();
+        updateFreeApartments();
+        this.reset();
+        alert("Мешканця успішно додано!");
+      } else {
+        alert("Помилка додавання: " + data.error);
+      }
+    })
+    .catch(err => alert("Помилка мережі: " + err));
+  });
+}
+
 function updateFreeApartments() {
   let select = document.getElementById("apartment");
+  if (!select) return;
+
   select.innerHTML = '<option value="">Оберіть вільну квартиру</option>';
 
   let freeApartments = residents
@@ -149,7 +136,6 @@ function updateFreeApartments() {
   });
 }
 
-// Пошук мешканця по номеру квартири
 function searchResident() {
   let apt = parseInt(document.getElementById("searchId").value);
   let resBox = document.getElementById("searchResult");
@@ -159,7 +145,6 @@ function searchResident() {
     return;
   }
 
-  // Приводимо apartment до числа
   let r = residents.find(x => parseInt(x.apartment) === apt);
   
   if (r) {
@@ -177,15 +162,16 @@ function searchResident() {
   }
 }
 
-// Пошук при натисканні Enter
-document.getElementById("searchId").addEventListener("keydown", function(e) {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    searchResident();
-  }
-});
+const searchIdInput = document.getElementById("searchId");
+if (searchIdInput) {
+  searchIdInput.addEventListener("keydown", function(e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      searchResident();
+    }
+  });
+}
 
-// Сортування таблиці з перемиканням напрямку
 function sortTable(colIndex) {
   sortDirections[colIndex] = !sortDirections[colIndex]; 
   let direction = sortDirections[colIndex] ? 1 : -1;
@@ -194,196 +180,214 @@ function sortTable(colIndex) {
     let valA, valB;
 
     switch (colIndex) {
-      case 0: // ID
-        valA = a.id; valB = b.id; break;
-      case 1: // ПІБ
-        valA = a.name; valB = b.name; break;
-      case 2: // Квартира
-        valA = a.apartment; valB = b.apartment; break;
-      case 3: // Під’їзд
-        valA = a.entrance; valB = b.entrance; break;
-      case 4: // Площа
-        valA = a.area; valB = b.area; break;
-      case 5: // До сплати
-        valA = calculatePayment(a); valB = calculatePayment(b); break;
-      case 6: // Заборгованість
-        valA = calculateDebt(a); valB = calculateDebt(b); break;
-      default:
-        valA = 0; valB = 0;
+      case 0: valA = a.id; valB = b.id; break;
+      case 1: valA = a.name; valB = b.name; break;
+      case 2: valA = a.apartment; valB = b.apartment; break;
+      case 3: valA = a.entrance; valB = b.entrance; break;
+      case 4: valA = a.area; valB = b.area; break;
+      case 5: valA = calculatePayment(a); valB = calculatePayment(b); break;
+      case 6: valA = calculateDebt(a); valB = calculateDebt(b); break;
+      default: valA = 0; valB = 0;
     }
 
     if (typeof valA === "number") return (valA - valB) * direction;
-    return valA.toString().localeCompare(valB.toString(), "uk") * direction;
+    return (valA || "").toString().localeCompare((valB || "").toString(), "uk") * direction;
   });
 
   renderTable();
 }
 
-// Повідомлення
-function sendMessage() {
-  let text = document.getElementById("adminMessage").value.trim();
-  if (text !== "") {
-    messages.unshift(text);
-    let msgList = document.getElementById("messages");
-    msgList.innerHTML = messages.map(m => `<li>${m}</li>`).join("");
-    document.getElementById("adminMessage").value = "";
-  }
-}
-
 document.addEventListener('DOMContentLoaded', () => {
   const toggle = document.getElementById('themeToggle');
-  const checkbox = toggle.querySelector('input');
-
-  // Встановлюємо тему з localStorage або за замовчуванням світлу
-  const savedTheme = localStorage.getItem('theme') || 'light';
-  if (savedTheme === 'dark') {
-    document.body.classList.add('dark-theme');
-    checkbox.checked = true;
-  } else {
-    document.body.classList.remove('dark-theme');
-    checkbox.checked = false;
-  }
-
-  // Перемикач теми
-  toggle.addEventListener('change', () => {
-    if (checkbox.checked) {
+  if (toggle) {
+    const checkbox = toggle.querySelector('input');
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    
+    if (savedTheme === 'dark') {
       document.body.classList.add('dark-theme');
-      localStorage.setItem('theme', 'dark');
+      checkbox.checked = true;
     } else {
       document.body.classList.remove('dark-theme');
-      localStorage.setItem('theme', 'light');
+      checkbox.checked = false;
     }
-  });
+
+    toggle.addEventListener('change', () => {
+      if (checkbox.checked) {
+        document.body.classList.add('dark-theme');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        document.body.classList.remove('dark-theme');
+        localStorage.setItem('theme', 'light');
+      }
+    });
+  }
 });
 
-// Повідомлення - завантаження та відправка
 const sendBtn = document.querySelector('#sendMessageBtn');
 const adminMessage = document.getElementById('adminMessage');
 const messagesList = document.getElementById('messages');
 
-function sendMessage() {
-    const msg = adminMessage.value.trim();
-    if (!msg) return;
+if (sendBtn && adminMessage && messagesList) {
+    sendBtn.addEventListener('click', sendMessage);
 
-    fetch('php/send_message.php', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: 'message=' + encodeURIComponent(msg)
-    }).then(() => {
-        adminMessage.value = '';
-        loadMessages();
-    });
-}
+    function sendMessage() {
+        const msg = adminMessage.value.trim();
+        if (!msg) return;
 
-function loadMessages() {
-    fetch('php/get_messages.php')
-        .then(res => res.json())
-        .then(data => {
-            messagesList.innerHTML = '';
-            data.forEach(msg => {
-                const li = document.createElement('li');
-                li.className = 'message-item';
-
-                // Текст повідомлення
-                const spanText = document.createElement('span');
-                spanText.textContent = `[${msg.sender}] ${msg.message} (${msg.created_at})`;
-                li.appendChild(spanText);
-
-                // Кнопка видалення
-                const delBtn = document.createElement('button');
-                delBtn.textContent = "🗑️";
-                delBtn.className = 'delete-btn';
-                delBtn.onclick = () => deleteMessage(msg.id);
-                li.appendChild(delBtn);
-
-                messagesList.appendChild(li);
-            });
+        fetch('/php/send_message.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'message=' + encodeURIComponent(msg)
+        }).then(() => {
+            adminMessage.value = '';
+            loadMessages();
         });
-}
-
-function deleteMessage(id) {
-    if (!confirm("Видалити це повідомлення?")) return;
-
-    fetch('php/delete_message.php', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: 'id=' + encodeURIComponent(id)
-    }).then(() => loadMessages());
-}
-
-// Автооновлення кожні 5 секунд
-setInterval(loadMessages, 5000);
-loadMessages();
-
-  // ======= Завантаження таблиці =======
-  function loadTable() {
-    const table = document.getElementById('tableSelect').value;
-    const container = document.getElementById('tableContainer');
-    if (!table) {
-      container.innerHTML = "";
-      return;
     }
 
-    fetch(`db_operations.php?action=load&table=${table}&admin_id=${currentAdminId}`)
-        .then(res => res.text())
-        .then(html => {
-            document.getElementById('tableContainer').innerHTML = html;
-        });
+    function loadMessages() {
+        fetch('/php/get_messages.php')
+            .then(res => res.json())
+            .then(data => {
+                messagesList.innerHTML = '';
+                data.forEach(msg => {
+                    const li = document.createElement('li');
+                    li.className = 'message-item';
+
+                    const spanText = document.createElement('span');
+                    spanText.textContent = `[${msg.sender}] ${msg.message} (${msg.created_at})`;
+                    li.appendChild(spanText);
+
+                    const delBtn = document.createElement('button');
+                    delBtn.textContent = "🗑️";
+                    delBtn.className = 'delete-btn';
+                    delBtn.onclick = () => deleteMessage(msg.id);
+                    li.appendChild(delBtn);
+
+                    messagesList.appendChild(li);
+                });
+            })
+            .catch(err => console.error("Помилка завантаження повідомлень:", err));
+    }
+
+    function deleteMessage(id) {
+        if (!confirm("Видалити це повідомлення?")) return;
+
+        fetch('/php/delete_message.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'id=' + encodeURIComponent(id)
+        }).then(() => loadMessages());
+    }
+
+    setInterval(loadMessages, 5000);
+    loadMessages();
+}
+
+function loadTable() {
+  const tableSelect = document.getElementById('tableSelect');
+  const table = tableSelect ? tableSelect.value : 'residents';
+  const container = document.getElementById('tableContainer');
+  if (!container) return;
+
+  if (!table) {
+    container.innerHTML = "";
+    return;
   }
 
-  // ======= Додавання / редагування / видалення =======
-  function editRow(table, id) {
-    const inputs = document.querySelectorAll(`#row_${id} input`);
-    const data = {};
-    inputs.forEach(inp => data[inp.name] = inp.value);
-
-    fetch('db_operations.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({ action: 'update', table, id, ...data })
-    })
-    .then(res => res.text())
-    .then(msg => {
-      alert(msg);
-      loadTable();
-    });
-  }
-
-  function deleteRow(table, id) {
-    if (!confirm('Видалити цей запис?')) return;
-    fetch('db_operations.php?action=delete&table=' + table + '&id=' + id)
+  fetch(`/php/db_operations.php?action=load&table=${table}`)
       .then(res => res.text())
-      .then(msg => {
-        alert(msg);
-        loadTable();
+      .then(html => {
+          container.innerHTML = html;
+          makeTableResizable();
       });
-  }
+}
 
-  function addRow(table) {
-    const inputs = document.querySelectorAll('#addForm input');
-    const data = {};
-    inputs.forEach(inp => data[inp.name] = inp.value);
+function editRow(table, id) {
+  const row = document.getElementById(`row_${id}`);
+  const inputs = row.querySelectorAll(`input`);
+  const data = {};
+  inputs.forEach(inp => data[inp.name] = inp.value);
 
-    fetch('db_operations.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({ action: 'add', table, ...data })
-    })
+  const btn = row.querySelector("button[onclick^='editRow']");
+  const originalText = btn ? btn.innerHTML : '💾';
+
+  if (btn) btn.innerHTML = '⏳';
+
+  fetch('/php/db_operations.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({ action: 'update', table, id, ...data })
+  })
+  .then(res => res.text())
+  .then(msg => {
+    if (msg.includes("✅")) {
+        if (btn) {
+            btn.innerHTML = '✅';
+            btn.style.backgroundColor = '#059669';
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.style.backgroundColor = '';
+            }, 2000);
+        }
+    } else {
+        alert(msg);
+        if (btn) btn.innerHTML = originalText;
+    }
+  })
+  .catch(err => {
+      alert("❌ Помилка з'єднання з сервером");
+      if (btn) btn.innerHTML = originalText;
+  });
+}
+
+function deleteRow(table, id) {
+  if (!confirm('Видалити цей запис безповоротно?')) return;
+  fetch(`/php/db_operations.php?action=delete&table=${table}&id=${id}`)
     .then(res => res.text())
     .then(msg => {
       alert(msg);
       loadTable();
     });
-  }
+}
 
-document.querySelectorAll('table input').forEach(input => {
-    input.addEventListener('focus', () => {
-        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    });
+function addRow(table) {
+  const inputs = document.querySelectorAll('#addForm input');
+  const data = {};
+  inputs.forEach(inp => data[inp.name] = inp.value);
+
+  fetch('/php/db_operations.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({ action: 'add', table, ...data })
+  })
+  .then(res => res.text())
+  .then(msg => {
+    alert(msg);
+    if (msg.includes("✅")) {
+        loadTable();
+    }
+  });
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
+        const row = e.target.closest('tr');
+        if (row && row.id && row.id.startsWith('row_')) {
+            const id = row.id.replace('row_', '');
+            const tableSelect = document.getElementById('tableSelect');
+            const table = tableSelect ? tableSelect.value : 'residents';
+            
+            editRow(table, id);
+            e.target.blur();
+        }
+    }
 });
 
 function confirmPayment() {
-  const email = document.querySelector('#paymentForm input[type="email"]').value;
+  const emailInput = document.querySelector('#paymentForm input[type="email"]');
+  if (!emailInput) return;
+  
+  const email = emailInput.value;
   const creds = generateCredentials();
 
   const messageDiv = document.createElement('div');
@@ -401,10 +405,13 @@ function confirmPayment() {
   `;
 
   const paymentSection = document.getElementById('paymentSection');
-  paymentSection.appendChild(messageDiv);
+  if (paymentSection) paymentSection.appendChild(messageDiv);
 
-  document.getElementById('paymentForm').reset();
-  document.getElementById('paymentForm').style.display = 'none';
+  const form = document.getElementById('paymentForm');
+  if (form) {
+    form.reset();
+    form.style.display = 'none';
+  }
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -412,11 +419,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const month = now.getMonth() + 1;
     const day = now.getDate();
 
-    // Період з 14 грудня по 14 січня
     const isWinterTime = (month === 12 && day >= 14) || (month === 1 && day <= 14);
 
     if (isWinterTime) {
-        // Обираємо і хедер, і футер
         const snowContainers = document.querySelectorAll(".header, .footer");
         const snowflakeSymbols = ['❄', '❅', '❆', '*'];
 
@@ -442,9 +447,48 @@ document.addEventListener("DOMContentLoaded", function () {
             }, parseFloat(duration) * 1000);
         }
 
-        // Запускаємо генерацію для кожного контейнера
         snowContainers.forEach(container => {
             setInterval(() => createSnowflake(container), 400);
         });
     }
 });
+
+function makeTableResizable() {
+    const table = document.querySelector('#tableContainer table');
+    if (!table) return;
+
+    const cols = table.querySelectorAll('th');
+    cols.forEach(col => {
+        const resizer = document.createElement('div');
+        resizer.classList.add('resizer');
+        col.appendChild(resizer);
+
+        let x = 0;
+        let w = 0;
+
+        const mouseDownHandler = function(e) {
+            x = e.clientX;
+            const styles = window.getComputedStyle(col);
+            w = parseInt(styles.width, 10);
+
+            document.addEventListener('mousemove', mouseMoveHandler);
+            document.addEventListener('mouseup', mouseUpHandler);
+            
+            resizer.classList.add('resizing');
+        };
+
+        const mouseMoveHandler = function(e) {
+            const dx = e.clientX - x;
+            col.style.width = `${w + dx}px`;
+            col.style.minWidth = `${w + dx}px`;
+        };
+
+        const mouseUpHandler = function() {
+            resizer.classList.remove('resizing');
+            document.removeEventListener('mousemove', mouseMoveHandler);
+            document.removeEventListener('mouseup', mouseUpHandler);
+        };
+
+        resizer.addEventListener('mousedown', mouseDownHandler);
+    });
+}

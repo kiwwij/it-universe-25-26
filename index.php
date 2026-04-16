@@ -2,21 +2,16 @@
 header("Content-Type: text/html; charset=utf-8");
 session_start();
 
-// 1. Перевірка сесії: якщо адмін не увійшов – редирект на login.html
 if (!isset($_SESSION['admin_id'])) {
     header("Location: login.html");
     exit();
 }
 
-// 2. Підключення до БД
 require_once "php/db_connect.php";
-// Встановлюємо кодування utf8mb4 для коректного відображення українських літер
 $conn->set_charset("utf8mb4");
 
-// Отримуємо ID поточного адміністратора
 $admin_id = $_SESSION['admin_id'];
 
-// 3. Запит для вибірки даних поточного адміністратора
 $stmt = $conn->prepare("SELECT address, maps_link, fullname FROM admins WHERE id = ?");
 $stmt->bind_param("i", $admin_id);
 $stmt->execute();
@@ -33,7 +28,6 @@ if ($row = $result->fetch_assoc()) {
 }
 
 $stmt->close();
-// Закриваємо з'єднання в кінці файлу або після всіх запитів
 ?>
 
 <!DOCTYPE html>
@@ -50,7 +44,7 @@ $stmt->close();
   <link rel="stylesheet" href="css/adaptation.css">
 </head>
 <body class="<?= isset($_COOKIE['theme']) && $_COOKIE['theme'] === 'dark' ? 'dark-theme' : '' ?>">
-
+  
   <header class="header">
     <div class="header-left">
       <span class="address">
