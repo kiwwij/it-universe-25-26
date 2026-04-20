@@ -254,7 +254,7 @@ if (sendBtn && adminMessage && messagesList) {
                     li.className = 'message-item';
 
                     const spanText = document.createElement('span');
-                    spanText.textContent = `[${msg.sender}] ${msg.message} (${msg.created_at})`;
+                    spanText.textContent = `Admin: ${msg.message} (${msg.created_at})`;
                     li.appendChild(spanText);
 
                     const delBtn = document.createElement('button');

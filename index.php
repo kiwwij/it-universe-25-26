@@ -130,7 +130,7 @@ $stmt->close();
     <section>
       <h2><img src="img/megaphone.png" alt="Повідомлення" style="height: 24px; vertical-align: middle; margin-right: 6px;">Дошка оголошень</h2>
       <textarea id="adminMessage" placeholder="Введіть текст оголошення для мешканців..."></textarea><br>
-      <button type="button" id="sendMessageBtn" onclick="sendMessage()">Опублікувати</button>
+      <button type="button" id="sendMessageBtn">Опублікувати</button>
       <ul id="messages" style="margin-top: 20px;"></ul>
     </section>
   </main>
