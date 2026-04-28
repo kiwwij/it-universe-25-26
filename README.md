@@ -53,4 +53,4 @@
 
 _© 2026 Freyja — Розроблено для покращення життя у багатоквартирних будинках._
 
-[link to the site](https://testosbb.xo.je/php/login.php)
+[link to the site](https://kiwwij.github.io/kiwwij-social-links/)

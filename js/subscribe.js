@@ -57,3 +57,5 @@ function downloadPDF() {
 document.getElementById('cardNumber').addEventListener('input', function(e) {
   e.target.value = e.target.value.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim();
 });
+
+document.getElementById('year').textContent = new Date().getFullYear();
