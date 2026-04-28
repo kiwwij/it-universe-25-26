@@ -9,19 +9,6 @@ if (!isset($_SESSION['admin_id'])) {
 
 $admin_id = $_SESSION['admin_id'];
 
-// $servername = "sql211.infinityfree.com";
-// $username = "if0_40139266";
-// $password = "Gfo8FVb3NNnLh";
-// $dbname = "if0_40139266_osbb";
-
-// $conn = new mysqli($servername, $username, $password, $dbname);
-
-// $conn->set_charset("utf8mb4");
-
-// if ($conn->connect_error) {
-//     die(json_encode(["error" => $conn->connect_error]));
-// }
-
 require_once "db_connect.php";
 
 $stmt = $conn->prepare("SELECT id, name, apartment, entrance, floor, area, currentBalance, paymentDue, debt FROM residents WHERE admin_id = ?");

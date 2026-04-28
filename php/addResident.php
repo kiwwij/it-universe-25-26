@@ -14,20 +14,6 @@ if (!isset($_SESSION['admin_id'])) {
 
 $admin_id = $_SESSION['admin_id'];
 
-// $servername = "sql211.infinityfree.com";
-// $username = "if0_40139266";
-// $password = "Gfo8FVb3NNnLh";
-// $dbname = "if0_40139266_osbb"; 
-
-// $conn = new mysqli($servername, $username, $password, $dbname);
-
-// $conn->set_charset("utf8mb4");
-
-// if ($conn->connect_error) {
-//     echo json_encode(['success' => false, 'error' => 'Помилка підключення до БД']);
-//     exit;
-// }
-
 require_once "db_connect.php";
 
 $input = json_decode(file_get_contents('php://input'), true);

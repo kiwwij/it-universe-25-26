@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             <p><span class='label'>Email:</span> $email</p>
             <p><span class='label'>Статус:</span> ОПЛАЧЕНО</p>
         </div>
-        <div class='footer'>Дякуємо за оплату! © 2025 ОСББ Платформа</div>
+        <div class='footer'>Дякуємо за оплату! © 2026 ОСББ Платформа</div>
     </body>
     </html>";
 

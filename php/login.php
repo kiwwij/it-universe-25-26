@@ -11,16 +11,6 @@ if (!file_exists($file) && !is_dir($file)) {
     exit;
 }
 
-// $servername = "sql211.infinityfree.com";
-// $username = "if0_40139266";
-// $password = "Gfo8FVb3NNnLh";
-// $dbname = "if0_40139266_osbb";
-
-// $conn = new mysqli($servername, $username, $password, $dbname);
-// if ($conn->connect_error) {
-//     die("Помилка з'єднання: " . $conn->connect_error);
-// }
-
 require_once "db_connect.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -85,7 +75,6 @@ $conn->close();
           <button type="submit">Увійти</button>
         </form>
  			<p>Немає акаунта? <a href="/subscribe.html">Придбати</a></p>
-<!--        <p>Ще не зареєстровані? <a href="../register.html">Зареєструватися</a></p> -->
       </div>
     </div>
   </main>

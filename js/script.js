@@ -457,8 +457,18 @@ function makeTableResizable() {
     const table = document.querySelector('#tableContainer table');
     if (!table) return;
 
+    const tableId = document.getElementById('tableSelect') ? document.getElementById('tableSelect').value : 'residents';
+    const savedWidths = JSON.parse(localStorage.getItem(`col_widths_${tableId}`)) || {};
+
     const cols = table.querySelectorAll('th');
-    cols.forEach(col => {
+    cols.forEach((col, index) => {
+        const colKey = `col_${index}`;
+        
+        if (savedWidths[colKey]) {
+            col.style.width = savedWidths[colKey];
+            col.style.minWidth = savedWidths[colKey];
+        }
+
         const resizer = document.createElement('div');
         resizer.classList.add('resizer');
         col.appendChild(resizer);
@@ -479,16 +489,22 @@ function makeTableResizable() {
 
         const mouseMoveHandler = function(e) {
             const dx = e.clientX - x;
-            col.style.width = `${w + dx}px`;
-            col.style.minWidth = `${w + dx}px`;
+            const newWidth = `${w + dx}px`;
+            col.style.width = newWidth;
+            col.style.minWidth = newWidth;
         };
 
         const mouseUpHandler = function() {
             resizer.classList.remove('resizing');
             document.removeEventListener('mousemove', mouseMoveHandler);
             document.removeEventListener('mouseup', mouseUpHandler);
+
+            savedWidths[colKey] = col.style.width;
+            localStorage.setItem(`col_widths_${tableId}`, JSON.stringify(savedWidths));
         };
 
         resizer.addEventListener('mousedown', mouseDownHandler);
     });
 }
+
+document.getElementById('year').textContent = new Date().getFullYear();

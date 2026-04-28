@@ -109,10 +109,11 @@ while ($row = $chartQuery->fetch_assoc()) {
 
   <footer class="footer">
     <div class="footer-container">
-      <p>&copy; 2025 ОСББ | Аналітика та звіти</p>
+      <p>&copy; <?= date('Y') ?> ОСББ | Аналітика та звіти</p>
       <div class="footer-links">
         <a href="logout.php">Вихід</a>
         <a href="../index.php">Головна</a>
+        <a href="php/db_management.php">Керування БД</a>
       </div>
     </div>
   </footer>

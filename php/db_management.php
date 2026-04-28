@@ -74,10 +74,11 @@ $stmt->close();
 
   <footer class="footer">
     <div class="footer-container">
-      <p>&copy; 2025 ОСББ | Панель управління</p>
+      <p>&copy; <?= date('Y') ?> ОСББ | Панель управління</p>
       <div class="footer-links">
         <a href="logout.php">Вихід</a>
         <a href="../index.php">Головна</a>
+        <a href="php/reports.php">Аналітика та звіти</a>
       </div>
     </div>
   </footer>
