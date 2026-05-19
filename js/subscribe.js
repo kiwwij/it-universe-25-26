@@ -43,15 +43,7 @@ async function confirmPayment() {
 }
 
 function downloadPDF() {
-    const orderId = document.getElementById('rNumber').innerText;
-    const name = document.getElementById('rName').innerText;
-    const email = document.getElementById('rEmail').innerText;
-    const plan = document.getElementById('rPlan').innerText;
-    const price = document.getElementById('rAmount').innerText.replace('₴', '');
-
-    const url = `php/send_receipt.php?orderId=${orderId}&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&plan=${encodeURIComponent(plan)}&price=${price}`;
-        
-    window.location.href = url;
+    window.print();
 }
 
 document.getElementById('cardNumber').addEventListener('input', function(e) {

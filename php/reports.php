@@ -7,7 +7,7 @@ header("Content-Type: text/html; charset=utf-8");
 session_start();
 
 if (!isset($_SESSION['admin_id'])) {
-    header("Location: ../login.html");
+    header("Location: login.php"); 
     exit();
 }
 
@@ -113,7 +113,7 @@ while ($row = $chartQuery->fetch_assoc()) {
       <div class="footer-links">
         <a href="logout.php">Вихід</a>
         <a href="../index.php">Головна</a>
-        <a href="php/db_management.php">Керування БД</a>
+        <a href="db_management.php">Керування БД</a>
       </div>
     </div>
   </footer>

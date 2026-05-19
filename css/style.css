@@ -596,3 +596,78 @@ header.header {
     #receiptModal { position: absolute; left: 0; top: 0; background: none; }
     .btn-print { display: none; }
   }
+
+.password-container {
+  position: relative;
+  width: 100%;
+}
+
+.password-container input[type="password"],
+.password-container input[type="text"] {
+  width: 100%;
+  padding-right: 40px;
+  box-sizing: border-box;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 1.4rem;
+  color: #666;
+  user-select: none;
+}
+
+.toggle-password:hover {
+  color: #333;
+}
+
+.error-msg {
+  color: #dc2626;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin-bottom: 15px;
+  font-weight: 500;
+}
+
+.error-msg i {
+  font-size: 1.2rem;
+}
+
+body.dark-theme .auth-box {
+  background: #1b1b1b;
+  color: #e5e5e5;
+  border: 1px solid #333;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.7);
+}
+
+body.dark-theme .auth-box h2 {
+  color: #16a34a;
+}
+
+body.dark-theme .auth-box input {
+  background-color: #1e1e1e;
+  color: #e5e5e5;
+  border: 1px solid #555;
+}
+
+body.dark-theme .auth-box input:focus {
+  border-color: #16a34a;
+  box-shadow: 0 0 6px rgba(22,163,74,0.6);
+}
+
+body.dark-theme .auth-box a {
+  color: #16a34a;
+}
+
+body.dark-theme .toggle-password {
+  color: #aaa;
+}
+
+body.dark-theme .toggle-password:hover {
+  color: #fff;
+}

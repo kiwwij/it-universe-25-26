@@ -5,7 +5,7 @@ session_start();
 header("Content-Type: text/html; charset=utf-8");
 
 if (!isset($_SESSION['admin_id'])) {
-    header("Location: ../login.html");
+    header("Location: login.php");
     exit();
 }
 
@@ -78,7 +78,7 @@ $stmt->close();
       <div class="footer-links">
         <a href="logout.php">Вихід</a>
         <a href="../index.php">Головна</a>
-        <a href="php/reports.php">Аналітика та звіти</a>
+        <a href="reports.php">Аналітика та звіти</a>
       </div>
     </div>
   </footer>

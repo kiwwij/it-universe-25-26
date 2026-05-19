@@ -254,7 +254,18 @@ if (sendBtn && adminMessage && messagesList) {
                     li.className = 'message-item';
 
                     const spanText = document.createElement('span');
-                    spanText.textContent = `Admin: ${msg.message} (${msg.created_at})`;
+                    
+                    const localDate = new Date(msg.created_at_iso);
+                    const formattedTime = localDate.toLocaleString('uk-UA', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                    });
+
+                    spanText.textContent = `Admin: ${msg.message} (${formattedTime})`;
                     li.appendChild(spanText);
 
                     const delBtn = document.createElement('button');
