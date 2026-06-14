@@ -715,3 +715,56 @@ footer.footer {
     from { transform: translateY(0); }
     to { transform: translateY(100px); }
 }
+
+.add-form-container {
+  max-width: 450px;
+  margin: 40px auto 20px auto;
+  padding: 30px;
+  background: #f9fafb;
+  border: 1px solid #bbf7d0;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.add-form-container h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #166534;
+  font-size: 20px;
+}
+
+#addForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+#addForm input {
+  width: 100% !important; 
+  box-sizing: border-box;
+  padding: 12px;
+  border-radius: 8px;
+  margin: 0;
+}
+
+.add-btn {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+body.dark-theme .add-form-container {
+  background: #1c1c1c;
+  border-color: #333;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-theme .add-form-container h3 {
+  color: #16a34a;
+}

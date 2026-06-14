@@ -15,10 +15,14 @@ function choosePlan(name, price) {
 
 async function confirmPayment() {
   const name = document.getElementById('cardName').value;
+  const region = document.getElementById('region').value;
+  const street = document.getElementById('street').value;
+  const mapsLink = document.getElementById('mapsLink').value;
+  const phone = document.getElementById('phone').value;
   const email = document.getElementById('email').value;
   const card = document.getElementById('cardNumber').value;
 
-  if (!name || !email || card.length < 16) {
+  if (!name || !email || !region || !street || !phone || card.length < 16) {
     alert('Заповніть форму коректно!');
     return;
   }
@@ -30,6 +34,9 @@ async function confirmPayment() {
   document.getElementById('rPlan').innerText = selectedPlanName;
   document.getElementById('rAmount').innerText = `₴${selectedPlanPrice}`;
   document.getElementById('rName').innerText = name;
+  document.getElementById('rRegion').innerText = region;
+  document.getElementById('rStreet').innerText = street;
+  document.getElementById('rPhone').innerText = phone;
   document.getElementById('rEmail').innerText = email;
   document.getElementById('rCard').innerText = card.replace(/\d(?=\d{4})/g, "*");
 
@@ -38,7 +45,7 @@ async function confirmPayment() {
   fetch('php/send_receipt.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, plan: selectedPlanName, price: selectedPlanPrice, orderId })
+        body: JSON.stringify({ name, email, phone, region, street, mapsLink, plan: selectedPlanName, price: selectedPlanPrice, orderId })
     }).then(res => res.json()).then(data => console.log("Email status:", data));
 }
 

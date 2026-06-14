@@ -137,7 +137,7 @@ $stmt->close();
 
   <footer class="footer">
     <div class="footer-container">
-      <p>&copy; <?= date('Y') ?> ОСББ</p>
+      <p>&copy; <?= date('Y') ?> ОСББ | <a href="about.html" style="color: #fff; text-decoration: underline; margin-left: 5px;">Про нас</a></p>
       <div class="footer-links">
         <a href="php/login.php">Вихід</a>
         <a href="php/db_management.php">Керування БД</a>

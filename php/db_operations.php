@@ -25,11 +25,24 @@ if ($action === 'load' && $table === 'residents') {
 
     if (!$res) { echo "Помилка завантаження даних"; exit; }
 
+    $fieldTranslations = [
+        'name' => 'ПІБ мешканця',
+        'apartment' => '№ Квартири',
+        'entrance' => 'Під\'їзд',
+        'floor' => 'Поверх',
+        'area' => 'Площа (м²)',
+        'currentBalance' => 'Поточний баланс (грн)',
+        'paymentDue' => 'До сплати (грн)',
+        'debt' => 'Заборгованість (грн)'
+    ];
+
     echo "<table><thead><tr>";
     $fields = $res->fetch_fields();
     foreach ($fields as $field) {
         if ($field->name === 'admin_id') continue; 
-        echo "<th>{$field->name}</th>";
+        
+        $thText = $fieldTranslations[$field->name] ?? $field->name;
+        echo "<th>{$thText}</th>";
     }
     echo "<th>Дії</th></tr></thead><tbody>";
 
@@ -41,18 +54,30 @@ if ($action === 'load' && $table === 'residents') {
         }
         echo "<td>
               <button onclick=\"editRow('$table', '{$row['id']}')\">💾</button>
-              <button onclick=\"deleteRow('$table', '{$row['id']}')\">🗑️</button>
+              <button class=\"delete\" onclick=\"deleteRow('$table', '{$row['id']}')\">🗑️</button>
               </td></tr>";
     }
 
-    echo "</tbody></table><h3>➕ Додати запис</h3><form id='addForm'>";
+    echo "</tbody></table>";
+    
+    echo "<div class='add-form-container'>";
+    echo "<h3>➕ Додати запис</h3>";
+    echo "<form id='addForm'>";
+    
     $desc = $conn->query("DESCRIBE `$table`");
     while ($f = $desc->fetch_assoc()) {
         if ($f['Extra'] !== 'auto_increment' && $f['Field'] !== 'admin_id') {
-            echo "<input name='{$f['Field']}' placeholder='{$f['Field']}'>";
+            
+            $placeholderText = $fieldTranslations[$f['Field']] ?? $f['Field'];
+            echo "<input type='text' name='{$f['Field']}' placeholder='{$placeholderText}'>";
+            
         }
     }
-    echo "</form><button onclick=\"addRow('$table')\">Додати</button>";
+    
+    echo "</form>";
+    echo "<button class='add-btn' onclick=\"addRow('$table')\">Додати в базу</button>";
+    echo "</div>";
+    
     $stmt->close();
     exit;
 }
@@ -113,3 +138,4 @@ if ($action === 'add') {
     }
     exit;
 }
+?>

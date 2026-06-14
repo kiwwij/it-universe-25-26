@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Про нас | Адмін-панель Freyja</title>
+  <link rel="shortcut icon" type="image/x-icon" href="img/osbb2.png">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/adaptation.css">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+</head>
+<body>
+  
+  <header class="header">
+    <div class="header-left">
+      <a href="index.php" style="color: white; text-decoration: none; font-weight: bold;">← На головну</a>
+    </div>
+
+    <div class="header-center">
+      <img class="logo" src="img/osbb3.png" alt="Логотип ОСББ">
+      <h1>Про нас</h1>
+    </div>
+
+    <div class="header-right">
+      <label class="ui-switch" id="themeToggle">
+        <input type="checkbox" id="themeCheckbox">
+        <div class="slider">
+          <div class="circle"></div>
+        </div>
+      </label>
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <h2>Про платформу Freyja</h2>
+      <p style="line-height: 1.8; text-align: justify; font-size: 15px;">
+        Freyja – це сучасний веб-сайт для адміністрування ОСББ та мобільний додаток для мешканців багатоквартирних будинків, створений, щоб зробити життя в будинку зручнішим, а управління – ефективнішим і прозорим. У час, коли цифрові технології спрощують кожну сферу нашого життя, Freyja об’єднує всі інструменти керування ОСББ в одному місці. Через веб-панель адміністратор може контролювати фінанси, формувати звіти, створювати оголошення та планувати збори – усе швидко, зручно і без зайвої паперової роботи.
+      </p>
+    </section>
+
+    <section>
+      <h2>Контакти</h2>
+      <p style="margin-bottom: 20px;">Маєте запитання або пропозиції? Зв'яжіться з нами:</p>
+      
+      <ul style="list-style: none; padding: 0; line-height: 2.5; font-size: 15px;">
+        <li style="display: flex; align-items: center; gap: 10px;">
+          <i class='bx bx-envelope' style='font-size: 22px; color: #16a34a; vertical-align: middle;'></i> 
+          <span><strong>Пошта:</strong> info@freyja.ua</span>
+        </li>
+        <li style="display: flex; align-items: center; gap: 10px;">
+          <i class='bx bx-phone' style='font-size: 22px; color: #16a34a; vertical-align: middle;'></i> 
+          <span><strong>Телефон:</strong> +380 (XX) XXX-XX-XX</span>
+        </li>
+        <li style="display: flex; align-items: center; gap: 10px;">
+          <i class='bx bx-map' style='font-size: 22px; color: #16a34a; vertical-align: middle;'></i> 
+          <span><strong>Локація:</strong> м. Вінниця, Україна</span>
+        </li>
+      </ul>
+
+      <hr style="border: 0; border-top: 1px solid #bbf7d0; margin: 25px 0;">
+
+      <h3 style="color: #166534; margin-bottom: 10px;">Команда проєкту</h3>
+      <ul style="list-style-type: disc; padding-left: 20px; line-height: 1.8; font-size: 15px;">
+        <li><strong>Олександр Юхимчук</strong> — Team Lead</li>
+        <li><strong>Сергій Тахтаров</strong> — Software Engineer (Frontend & Backend)</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-container">
+      <p>&copy; <span id="year"></span> ОСББ </p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const checkbox = document.getElementById('themeCheckbox');
+      
+      const getSavedTheme = () => {
+        const match = document.cookie.match(new RegExp('(^| )theme=([^;]+)'));
+        if (match) return match[2];
+        return localStorage.getItem('theme') || 'light';
+      };
+
+      const savedTheme = getSavedTheme();
+      if (savedTheme === 'dark') {
+        document.body.classList.add('dark-theme');
+        if (checkbox) checkbox.checked = true;
+      }
+
+      const toggle = document.getElementById('themeToggle');
+      if (toggle && checkbox) {
+        toggle.addEventListener('change', () => {
+          if (checkbox.checked) {
+            document.body.classList.add('dark-theme');
+            localStorage.setItem('theme', 'dark');
+            document.cookie = "theme=dark; path=/; max-age=31536000";
+          } else {
+            document.body.classList.remove('dark-theme');
+            localStorage.setItem('theme', 'light');
+            document.cookie = "theme=light; path=/; max-age=31536000";
+          }
+        });
+      }
+
+      const yearSpan = document.getElementById('year');
+      if (yearSpan) {
+        yearSpan.textContent = new Date().getFullYear();
+      }
+    });
+  </script>
+</body>
+</html>

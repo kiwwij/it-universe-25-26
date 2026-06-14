@@ -25,10 +25,45 @@
       <h2>Оберіть план підписки</h2>
       <p>Отримайте аккаунт, який дає можливість керувати вашим ОСББ.</p>
       <table>
-        <tr><th>План</th><th>Термін</th><th>Ціна</th><th></th></tr>
-        <tr><td><b>Базовий</b></td><td>1 місяць</td><td>₴99</td><td><button onclick="choosePlan('Базовий', 99)">Придбати</button></td></tr>
-        <tr><td><b>Стандарт</b></td><td>6 місяців</td><td>₴499</td><td><button onclick="choosePlan('Стандарт', 499)">Придбати</button></td></tr>
-        <tr><td><b>Преміум</b></td><td>12 місяців</td><td>₴999</td><td><button onclick="choosePlan('Преміум', 999)">Придбати</button></td></tr>
+        <tr><th>План</th><th>Що входить</th><th>Ціна</th><th></th></tr>
+        <tr>
+          <td><b>Базовий</b></td>
+          <td>
+            <ul style="text-align: left; padding-left: 20px; margin: 0;">
+              <li>Ведення бази мешканців (додавання, редагування, видалення).</li>
+              <li>Встановлення нарахувань та відображення поточного боргу.</li>
+              <li>Доступ мешканців до мобільного застосунку (перегляд боргу, базова оплата).</li>
+              <li>Публікація загальних оголошень для мешканців.</li>
+            </ul>
+          </td>
+          <td>₴199</td>
+          <td><button onclick="choosePlan('Базовий', 199)">Придбати</button></td>
+        </tr>
+        <tr>
+          <td><b>Стандарт</b></td>
+          <td>
+            <ul style="text-align: left; padding-left: 20px; margin: 0;">
+              <li>Аналітика та графіки: Доступ до візуалізації заборгованості.</li>
+              <li>Звітність: Генерація та експорт списків боржників і квитанцій у PDF для адміністратора.</li>
+              <li>Звернення мешканців: Активація модуля зворотного зв'язку, де мешканці можуть писати адміну (наприклад, заявки на ремонт).</li>
+            </ul>
+          </td>
+          <td>₴499</td>
+          <td><button onclick="choosePlan('Стандарт', 499)">Придбати</button></td>
+        </tr>
+        <tr>
+          <td><b>Преміум</b></td>
+          <td>
+            <ul style="text-align: left; padding-left: 20px; margin: 0;">
+              <li>Голосування: Доступ до модуля електронних опитувань та голосувань у додатку.</li>
+              <li>Мультиакаунт: Керування кількома будинками з однієї панелі адміністратора.</li>
+              <li>Безліміт: Необмежена кількість квартир та мешканців у базі.</li>
+              <li>Пріоритетна підтримка: Швидке вирішення технічних питань.</li>
+            </ul>
+          </td>
+          <td>₴999</td>
+          <td><button onclick="choosePlan('Преміум', 999)">Придбати</button></td>
+        </tr>
       </table>
     </section>
 
@@ -37,6 +72,10 @@
       <p id="planInfo"></p>
       <form id="paymentForm" onsubmit="return false;">
         <input type="text" id="cardName" placeholder="ПІБ власника" required><br>
+        <input type="text" id="region" placeholder="Область" required><br>
+        <input type="text" id="street" placeholder="Вулиця та номер будинку" required><br>
+        <input type="url" id="mapsLink" placeholder="Посилання на Google Maps (необов'язково)"><br>
+        <input type="tel" id="phone" placeholder="Номер телефону" required><br>
         <input type="email" id="email" placeholder="Email" required><br>
         <input type="text" id="cardNumber" placeholder="Номер картки" maxlength="19" required><br>
         <input type="text" id="cardMonth" placeholder="MM" maxlength="2" required style="width:20%">
@@ -59,7 +98,11 @@
           <div style="display: flex; justify-content: space-between;"><span>План:</span> <b id="rPlan"></b></div>
           <div style="display: flex; justify-content: space-between;"><span>Сума:</span> <b id="rAmount"></b></div>
           <hr>
+          <hr>
           <div style="display: flex; justify-content: space-between;"><span>Платник:</span> <b id="rName"></b></div>
+          <div style="display: flex; justify-content: space-between;"><span>Область:</span> <b id="rRegion"></b></div>
+          <div style="display: flex; justify-content: space-between;"><span>Вулиця:</span> <b id="rStreet"></b></div>
+          <div style="display: flex; justify-content: space-between;"><span>Телефон:</span> <b id="rPhone"></b></div>
           <div style="display: flex; justify-content: space-between;"><span>Email:</span> <b id="rEmail"></b></div>
           <div style="display: flex; justify-content: space-between;"><span>Картка:</span> <b id="rCard"></b></div>
         </div>
@@ -72,7 +115,12 @@
   </div>
 
   <footer class="footer">
-    <footer>&copy; <span id="year"></span> ОСББ</p>
+    <div class="footer-container">
+      <p>&copy; <span id="year"></span> ОСББ</p>
+      <div class="footer-links">
+        <a href="about.html">Про нас</a>
+      </div>
+    </div>
   </footer>
 
   <script src="js/subscribe.js"></script>

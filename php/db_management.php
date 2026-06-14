@@ -74,7 +74,7 @@ $stmt->close();
 
   <footer class="footer">
     <div class="footer-container">
-      <p>&copy; <?= date('Y') ?> ОСББ | Панель управління</p>
+      <p>&copy; <?= date('Y') ?> ОСББ | <a href="../about.html" style="color: #fff; text-decoration: underline;">Про нас</a></p>
       <div class="footer-links">
         <a href="logout.php">Вихід</a>
         <a href="../index.php">Головна</a>
